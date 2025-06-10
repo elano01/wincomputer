@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Estratégico "Franco Atirador"</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'azul-fundo': '#0d1b2a',
+                        'azul-card': '#1b263b',
+                        'azul-borda': '#415a77',
+                        'azul-texto-claro': '#e0e1dd',
+                        'azul-texto-escuro': '#778da9',
+                        'gatilho-ouro': '#fca311',
+                        'gatilho-bom': '#03dac6',
+                        'red-roleta': '#dc2626',
+                        'black-roleta': '#1f2937',
+                        'green-roleta': '#16a34a'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['Roboto Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-azul-fundo text-azul-texto-claro">
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">
+                
+                <span class="text-gatilho-bom">FRANCO ATIRADOR</span>
+            </h1>
+            <p class="text-azul-texto-escuro mt-2">
+                Insira os números da roleta para identificar os gatilhos de alta oportunidade.
+            </p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="bg-azul-card p-6 rounded-lg shadow-lg mb-8">
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <label for="numeroInput" class="font-semibold text-lg whitespace-nowrap">
+                    Novo Número:
+                </label>
+                <input 
+                    type="number" 
+                    id="numeroInput" 
+                    min="0" 
+                    max="36" 
+                    class="w-full sm:w-auto flex-grow bg-azul-fundo text-white text-center text-2xl font-bold rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-gatilho-ouro" 
+                    placeholder="0-36"
+                >
+                <button 
+                    id="addNumeroBtn" 
+                    class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-md transition-colors duration-300"
+                >
+                    Adicionar
+                </button>
+            </div>
+            <div id="error-message" class="text-red-400 mt-3 text-center h-5"></div>
+        </div>
+
+        <!-- Histórico Section -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-xl font-semibold text-azul-texto-claro">
+                    Últimos Números (Clique para Editar):
+                </h2>
+                <div class="flex gap-2">
+                    <button 
+                        id="desfazerBtn" 
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md text-sm transition-colors duration-300"
+                    >
+                        ↶ Desfazer
+                    </button>
+                    <button 
+                        id="resetBtn" 
+                        class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-sm transition-colors duration-300"
+                    >
+                        × Resetar
+                    </button>
+                </div>
+            </div>
+            <div 
+                id="historicoContainer" 
+                class="flex flex-wrap gap-3 items-center justify-center bg-azul-card p-4 rounded-lg min-h-[80px] shadow-md"
+            >
+                <p class="text-azul-texto-escuro">Aguardando o primeiro número...</p>
+            </div>
+        </div>
+        
+        <!-- Main Analysis Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Gatilho Principal (full width) -->
+            <div 
+                id="gatilhoCard" 
+                class="bg-azul-card p-6 rounded-lg shadow-lg lg:col-span-3 border-2 border-azul-borda transition-all duration-300"
+            >
+                <h2 class="text-xl font-bold mb-2 text-blue-400 border-b-2 border-azul-borda pb-2">
+                    🎯 Gatilho Estratégico
+                </h2>
+                <div id="gatilhoComentario" class="text-lg text-azul-texto-claro mb-3">
+                    Aguardando análise...
+                </div>
+                <div id="gatilhoAlvosTitle" class="font-semibold text-gatilho-ouro mb-2" style="display: none;">
+                    Alvos Recomendados:
+                </div>
+                <div id="gatilhoAlvos" class="flex flex-wrap gap-3"></div>
+            </div>
+
+            <!-- Padrão da Mesa -->
+            <div class="bg-azul-card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-3 text-white border-b-2 border-azul-borda pb-2">
+                    📊 Padrão da Mesa
+                </h2>
+                <div id="padraoMesa" class="text-lg text-azul-texto-claro">
+                    <p id="padraoAtual" class="font-semibold text-gatilho-bom">-</p>
+                    <p id="padraoDescricao" class="text-sm text-azul-texto-escuro mt-2">
+                        Analisando últimos 5 números...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tendências Ativas -->
+            <div class="bg-azul-card p-6 rounded-lg shadow-lg lg:col-span-2">
+                <h2 class="text-xl font-bold mb-3 text-green-400 border-b-2 border-azul-borda pb-2">
+                    🔥 Tendências Ativas
+                </h2>
+                <div id="tendenciasAtivas" class="text-azul-texto-claro space-y-2">
+                    <div>Aguardando números suficientes...</div>
+                </div>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="bg-azul-card p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-3 text-yellow-400 border-b-2 border-azul-borda pb-2">
+                    📈 Estatísticas
+                </h2>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-azul-texto-escuro">Taxa de Resolução:</span>
+                        <span id="taxaResolucao" class="font-mono">0%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-azul-texto-escuro">Tendências Ativas:</span>
+                        <span id="totalTendencias" class="font-mono">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-azul-texto-escuro">Números Analisados:</span>
+                        <span id="totalNumeros" class="font-mono">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log de Resolução -->
+            <div class="bg-azul-card p-6 rounded-lg shadow-lg lg:col-span-2">
+                <h2 class="text-xl font-bold mb-3 text-purple-400 border-b-2 border-azul-borda pb-2">
+                    📋 Log de Resoluções
+                </h2>
+                <div id="logResolucao" class="text-sm space-y-1 max-h-32 overflow-y-auto font-mono">
+                    <div class="text-azul-texto-escuro">Nenhuma resolução registrada</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden">
+        <div class="bg-azul-card p-6 rounded-lg shadow-2xl max-w-sm w-full">
+            <h3 class="text-xl font-bold mb-4">Editar Número</h3>
+            <input 
+                type="number" 
+                id="editNumeroInput" 
+                min="0" 
+                max="36" 
+                class="w-full bg-azul-fundo text-white text-center text-2xl font-bold rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-gatilho-ouro"
+            >
+            <div class="flex gap-3">
+                <button 
+                    id="saveEditBtn" 
+                    class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+                >
+                    Salvar
+                </button>
+                <button 
+                    id="cancelEditBtn" 
+                    class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+                >
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/logica.js"></script>
+<script src="js/render.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
